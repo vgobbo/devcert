@@ -1,3 +1,5 @@
+use std::process::ExitCode;
+
 use clap::{Parser, Subcommand};
 
 mod ca;
@@ -21,11 +23,17 @@ pub enum Command {
 	/// Issue a certificate, signed by a CA.
 	Cert(main_cert::Arguments),
 }
-fn main() -> Result<(), i32> {
+fn main() -> ExitCode {
 	let args = Arguments::parse();
 
-	match args.command {
+	let result = match args.command {
 		Command::Ca(args) => main_ca::main(args),
 		Command::Cert(args) => main_cert::main(args),
-	}
+	};
+
+	let code = match result {
+		Ok(_) => exitcode::OK,
+		Err(e) => e,
+	};
+	ExitCode::from(code as u8)
 }
