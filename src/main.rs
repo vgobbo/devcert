@@ -1,6 +1,8 @@
 use clap::{Parser, Subcommand};
 
 mod main_ca;
+mod certificate_key_pair;
+mod ca;
 
 #[derive(Parser)]
 pub struct Arguments {
