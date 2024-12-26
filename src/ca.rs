@@ -1,8 +1,7 @@
 use chrono::{Datelike, Duration, Utc};
-use rcgen::{BasicConstraints, CertificateParams, DistinguishedName, DnType, IsCa, KeyPair, KeyUsagePurpose};
-use rsa::pkcs8::EncodePrivateKey;
-use rsa::RsaPrivateKey;
+use rcgen::{BasicConstraints, CertificateParams, DistinguishedName, DnType, IsCa, KeyUsagePurpose};
 use crate::certificate_key_pair::CertificateKeyPair;
+use crate::kp;
 
 pub struct CaParameters {
     pub ttl: Duration,
@@ -10,7 +9,7 @@ pub struct CaParameters {
     pub cn: String,
 }
 
-pub fn generate_ca<P>(params: P) -> Result<CertificateKeyPair, rcgen::Error> where P: Into<CaParameters> {
+pub fn generate<P>(params: P) -> Result<CertificateKeyPair, rcgen::Error> where P: Into<CaParameters> {
     let params = params.into();
 
     let mut cert_params = CertificateParams::default();
@@ -29,16 +28,9 @@ pub fn generate_ca<P>(params: P) -> Result<CertificateKeyPair, rcgen::Error> whe
 
     cert_params.key_usages = vec![KeyUsagePurpose::KeyCertSign, KeyUsagePurpose::CrlSign];
 
-    let ca_cert_key = generate_key_pair().unwrap();
+    let ca_cert_key = kp::generate().unwrap();
 
     let ca_cert = cert_params.self_signed(&ca_cert_key)?;
 
     Ok(CertificateKeyPair::new(ca_cert, ca_cert_key))
-}
-
-fn generate_key_pair() -> rsa::Result<KeyPair> {
-    let mut rng = rand::rngs::OsRng;
-    let private_key = RsaPrivateKey::new(&mut rng, 2048)?;
-    let private_key_der = private_key.to_pkcs8_der()?;
-    Ok(KeyPair::try_from(private_key_der.as_bytes()).unwrap())
 }
