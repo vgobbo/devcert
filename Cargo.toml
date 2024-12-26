@@ -1,0 +1,18 @@
+[package]
+authors = [ "Vinicius Gobbo Antunes de Oliveira <vgobbo@gmail.com>" ]
+description = "Tool to easily generate certificates to be used in development environments."
+edition = "2021"
+homepage = "https://github.com/vgobbo/devcert#devcert"
+keywords = [ "ca", "certificate", "mkcert", "tls" ]
+license = "MIT OR Apache-2.0"
+name = "devcert"
+readme = "CRATE.md"
+repository = "https://github.com/vgobbo/devcert"
+version = "0.1.0-SNAPSHOT"
+
+[dependencies]
+clap = { version = "4.5", features = [ "string" ], optional = true }
+duration-flex = { version = "0.2", features = [ "clap" ] }
+rcgen = { version = "0.11", features = [ "pem" ] }
+
+[dev-dependencies]
