@@ -9,6 +9,7 @@ mod kp;
 mod main_ca;
 mod main_cert;
 
+/// Easily generate certificates (and CA) to be used in development environments.
 #[derive(Parser)]
 pub struct Arguments {
 	#[command(subcommand)]
