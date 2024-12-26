@@ -26,3 +26,5 @@ cargo install --profile release taplo ripgrep
 ```
 6. Setup hooks: `./scripts/setup-hooks`
 7. (**Optional**) Run `./scripts/setup-target` to initialize `target/` in the temporary directory. This has to be done everytime the machine is restarted.
+
+[ASN.1 Javascript Decoder](https://lapo.it/asn1js/) is useful for debugging generated certificates.
