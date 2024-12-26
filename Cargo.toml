@@ -11,8 +11,13 @@ repository = "https://github.com/vgobbo/devcert"
 version = "0.1.0-SNAPSHOT"
 
 [dependencies]
-clap = { version = "4.5", features = [ "string" ], optional = true }
+clap = { version = "4.5", features = [ "derive", "string" ] }
 duration-flex = { version = "0.2", features = [ "clap" ] }
-rcgen = { version = "0.11", features = [ "pem" ] }
+rcgen = { version = "0.13", features = [ "pem" ] }
+chrono = {  version = "0.4" }
+rsa = {  version = "0.9" }
+gethostname = { version = "0.5" }
+rand = {  version = "0.8" }
+exitcode = { version = "1.1"}
 
 [dev-dependencies]
