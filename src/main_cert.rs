@@ -16,11 +16,11 @@ pub struct Arguments {
 	#[arg(long, default_value_t = Arguments::default().ttl)]
 	pub ttl: DurationFlex,
 
-	/// ON to be used on the certificate.
+	/// ON (Organization Name) to be used on the certificate.
 	#[arg(long, default_value_t = Arguments::default().on)]
 	pub on: String,
 
-	/// CN to be used on the certificate.
+	/// CN (Common Name) to be used on the certificate.
 	#[arg(long, default_value_t = Arguments::default().cn)]
 	pub cn: String,
 
@@ -31,6 +31,18 @@ pub struct Arguments {
 	/// Output file name (without extension).
 	#[arg(long, default_value_t = Arguments::default().name)]
 	pub name: String,
+
+	/// Do not include localhost as SAN.
+	#[arg(long, default_value_t = Arguments::default().no_localhost)]
+	pub no_localhost: bool,
+
+	/// Do not include hostname as SAN.
+	#[arg(long, default_value_t = Arguments::default().no_hostname)]
+	pub no_hostname: bool,
+
+	/// Include these names as SAN (Subject Alternative Name).
+	#[arg(long, num_args(0..))]
+	pub sans: Vec<String>,
 }
 
 pub fn main(args: Arguments) -> Result<(), ExitCode> {
@@ -42,7 +54,15 @@ pub fn main(args: Arguments) -> Result<(), ExitCode> {
 		},
 	};
 
-	let cert_params = CertParameters { ttl: args.ttl.into(), on: args.on, cn: args.cn, ca, sans: vec![] };
+	let mut sans = args.sans.clone();
+	if !args.no_hostname {
+		sans.push(gethostname().as_os_str().to_string_lossy().to_string());
+	}
+	if !args.no_localhost {
+		sans.push("localhost".to_string());
+	}
+
+	let cert_params = CertParameters { ttl: args.ttl.into(), on: args.on, cn: args.cn, ca, sans };
 
 	match cert::generate(cert_params) {
 		Ok(ckp) => ckp.write(args.name.as_str()).map_err(|_| exitcode::IOERR),
@@ -59,6 +79,9 @@ impl Default for Arguments {
 			cn: gethostname().to_string_lossy().into_owned(),
 			ca: "ca_cert".to_owned(),
 			name: "cert".to_owned(),
+			no_hostname: false,
+			no_localhost: false,
+			sans: vec![],
 		}
 	}
 }

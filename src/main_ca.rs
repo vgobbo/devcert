@@ -12,11 +12,11 @@ pub struct Arguments {
 	#[arg(long, default_value_t = Arguments::default().ttl)]
 	pub ttl: DurationFlex,
 
-	/// ON to be used on the CA.
+	/// ON (Organization Name) to be used on the CA.
 	#[arg(long, default_value_t = Arguments::default().on)]
 	pub on: String,
 
-	/// CN to be used on the CA.
+	/// CN (Common Name) to be used on the CA.
 	#[arg(long, default_value_t = Arguments::default().cn)]
 	pub cn: String,
 
